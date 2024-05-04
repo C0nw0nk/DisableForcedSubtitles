@@ -1,9 +1,5 @@
 @echo off & setLocal EnableDelayedExpansion
 
-:: Set the plex folder to search in recursively searches subfolders just provide the top level folder path
-:: Can be C:\ drive or \\NAS\STORAGE\PATH
-set plex_folder="C:\folder\path"
-
 :: Set the video formats to search for
 set video_formats="-key1 .mkv -key2 .mp4 -key3 .avi"
 
@@ -31,6 +27,9 @@ set looping=1
 
 color 0A
 TITLE C0nw0nk - Plex/Emby media disable forced subtitles
+
+echo Input the Directory or Path you want to correctly order for example C:\path or you can use \\NAS\STORAGE\PATH
+set /p "plex_folder="
 
 set root_path="%~dp0"
 
