@@ -66,6 +66,8 @@ for /l %%i in (1,1,%n%) do (
 	for /r %plex_folder% %%a in (*!token[%%i]!) do (
 		setlocal DisableDelayedExpansion
 		rem echo filename %%~dpna fileextension %%~xa
+		rem This will remove tags and global tags from the media item if you like
+		rem "%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --tags all:""
 		if [%check_for_sidecar%]==[1] (
 			if exist "%%~dpna.PlexCleaner" (
 				echo sidecar found
