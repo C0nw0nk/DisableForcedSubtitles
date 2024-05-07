@@ -68,6 +68,8 @@ for /l %%i in (1,1,%n%) do (
 		rem echo filename %%~dpna fileextension %%~xa
 		rem This will remove tags and global tags from the media item if you like
 		rem "%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --tags all:""
+		rem This will remove all chapter markers from the media item if you like
+		rem "%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --chapters ""
 		if [%check_for_sidecar%]==[1] (
 			if exist "%%~dpna.PlexCleaner" (
 				echo sidecar found
