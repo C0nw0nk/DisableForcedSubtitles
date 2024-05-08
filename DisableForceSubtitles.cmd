@@ -28,7 +28,7 @@ set looping=1
 color 0A
 TITLE C0nw0nk - Plex/Emby media disable forced subtitles
 
-echo Input the Directory or Path you want to correctly order for example C:\path or you can use \\NAS\STORAGE\PATH
+echo Input the Directory or Path you want to Remove Forced Subtitles flags on media items for example C:\path or you can use \\NAS\STORAGE\PATH
 set /p "plex_folder="
 
 set root_path="%~dp0"
@@ -62,8 +62,8 @@ for %%a in (%tokens:-=%) do (
 	)
 )
 for /l %%i in (1,1,%n%) do (
-	echo Enumerating all !token[%%i]!s under %plex_folder%
-	for /r %plex_folder% %%a in (*!token[%%i]!) do (
+	echo Enumerating all !token[%%i]!s under "%plex_folder:"=%"
+	for /r "%plex_folder:"=%" %%a in (*!token[%%i]!) do (
 		setlocal DisableDelayedExpansion
 		rem echo filename %%~dpna fileextension %%~xa
 		rem This will remove tags and global tags from the media item if you like
