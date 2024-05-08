@@ -1,7 +1,7 @@
 @echo off & setLocal EnableDelayedExpansion
 
 :: Set the video formats to search for
-set video_formats="-key1 .mkv -key2 .mp4 -key3 .avi"
+set video_formats="-key1 .mkv"
 
 :: Check for the .PlexCleaner sidecar file to skip already modified media
 :: 1 is to skip
