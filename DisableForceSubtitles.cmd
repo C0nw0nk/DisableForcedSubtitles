@@ -1,7 +1,19 @@
 @echo off & setLocal EnableDelayedExpansion
 
+:: This script will uncheck the Forced subtitle flag on media items in your library i added some extra features you can enable below such as Removing tags and chapter markers.
+
 :: Set the video formats to search for
 set video_formats="-key1 .mkv"
+
+:: Remove all tags from media this will be XML data inside the video container that would contain information for a media player to display such as actors in a scene etc
+:: 1 is to Remove
+:: 0 is to Keep
+set remove_all_tags=0
+
+:: Remove all chapter markers if you do not want chapter markers or do not need them this is useful for removing them
+:: 1 is to Remove
+:: 0 is to Keep
+set remove_all_chapter_markers=0
 
 :: Check for the .PlexCleaner sidecar file to skip already modified media
 :: 1 is to skip
@@ -67,9 +79,13 @@ for /l %%i in (1,1,%n%) do (
 		setlocal DisableDelayedExpansion
 		rem echo filename %%~dpna fileextension %%~xa
 		rem This will remove tags and global tags from the media item if you like
-		rem "%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --tags all:""
+		if [%remove_all_tags%]==[1] (
+			"%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --tags all:""
+		)
 		rem This will remove all chapter markers from the media item if you like
-		rem "%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --chapters ""
+		if [%remove_all_chapter_markers%]==[1] (
+			"%mkvtoolnix_path:"=%mkvpropedit.exe" "%%a" --chapters ""
+		)
 		if [%check_for_sidecar%]==[1] (
 			if exist "%%~dpna.PlexCleaner" (
 				echo sidecar found
