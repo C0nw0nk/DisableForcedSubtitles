@@ -5,6 +5,13 @@
 :: Set the video formats to search for
 set video_formats="-key1 .mkv"
 
+:: Directory to scan
+:: Path format can be Network share or Drive name
+:: example
+:: set plex_folder="C:\path\Movies"
+:: set plex_folder="\\NAS\FOLDER\Movies"
+set plex_folder=""
+
 :: Remove all tags from media this will be XML data inside the video container that would contain information for a media player to display such as actors in a scene etc
 :: 1 is to Remove
 :: 0 is to Keep
@@ -40,8 +47,25 @@ set looping=0
 color 0A
 TITLE C0nw0nk - Plex/Emby media disable forced subtitles
 
+:: Make script configurable via command line with arguements example
+:: "C:\path\DisableForceSubtitles.cmd" "\\NAS\path" "remove_all_tags" "remove_all_chapter_markers" "check_for_sidecar" "pause_window" "wait_interval" "looping" 2^>nul
+:: Working example
+:: "C:\path\DisableForceSubtitles.cmd" "\\NAS\path" "1" "1" "0" "1" "120" "1" 2^>nul
+
+if "%~1"=="" goto :script_arguments_not_defined
+set plex_folder="%~1"
+set remove_all_tags=%~2
+set remove_all_chapter_markers=%~3
+set check_for_sidecar=%~4
+set pause_window=%~5
+set wait_interval=%~6
+set looping=%~7
+:script_arguments_not_defined
+
+if "%plex_folder:"=%"=="" (
 echo Input the Directory or Path you want to Remove Forced Subtitles flags on media items for example C:\path or you can use \\NAS\STORAGE\PATH
 set /p "plex_folder="
+)
 
 set root_path="%~dp0"
 
@@ -52,8 +76,9 @@ if %PROCESSOR_ARCHITECTURE%==x86 (
 )
 
 goto :next_download
-
+echo starting removing forced subtitle flags
 :start_exe
+
 
 :: Forced Subtitle code
 
