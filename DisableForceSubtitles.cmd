@@ -85,6 +85,97 @@ echo starting removing forced subtitle flags
 set mkvtoolnix_path="%root_path:"=%mkvtoolnix\"
 set "PATH=%PATH%;%mkvtoolnix_path:"=%"
 
+pushd "%plex_folder:"=%" 2>nul
+if errorlevel 1 goto notdir
+goto isdir
+
+:notdir
+
+		setlocal DisableDelayedExpansion
+		echo Direct file path not a directory "%plex_folder:"=%"
+		for /f "delims=" %%F in ("%plex_folder:"=%") do set "directory_path_name=%%~dpnF"
+
+		rem This will remove tags and global tags from the media item if you like
+		if [%remove_all_tags%]==[1] (
+			echo Removing tags and global tags
+			"%mkvtoolnix_path:"=%mkvpropedit.exe" "%plex_folder:"=%" --tags all:""
+			if errorlevel 1 (
+				echo Warnings/errors generated during removing tags and global tags
+			) else (
+				echo Successfully removed tags and global tags
+			)
+		)
+		rem This will remove all chapter markers from the media item if you like
+		if [%remove_all_chapter_markers%]==[1] (
+			echo Removing Chapter markers
+			"%mkvtoolnix_path:"=%mkvpropedit.exe" "%plex_folder:"=%" --chapters ""
+			if errorlevel 1 (
+				echo Warnings/errors generated during removing Chapter markers
+			) else (
+				echo Successfully removed Chapter markers
+			)
+		)
+		if [%check_for_sidecar%]==[1] (
+			if exist "%directory_path_name:"=%.PlexCleaner" (
+				echo sidecar found
+				break
+			) else (
+				for /f %%b in ('mkvmerge.exe -i "%plex_folder:"=%" ^| find /c /i "subtitles"') do (
+					if [%%b]==[0] (
+						echo "%plex_folder:"=%" has no subtitles
+					) else (
+						echo "%plex_folder:"=%" has subtitles
+						for /l %%G in (1,1,%%b) do (
+							echo Subtitle track number %%G
+							"%mkvtoolnix_path:"=%mkvpropedit.exe" "%plex_folder:"=%" --edit track:s%%G --set flag-forced=0 --set name=""
+							if errorlevel 1 (
+								echo Warnings/errors generated during removing subtitle flags
+							) else (
+								echo Successfully removed subtitle flags
+							)
+							"%mkvtoolnix_path:"=%mkvpropedit.exe" "%plex_folder:"=%" --edit track:s%%G --set flag-default=0 --set name=""
+							if errorlevel 1 (
+								echo Warnings/errors generated during removing subtitle flags
+							) else (
+								echo Successfully removed subtitle flags
+							)
+						)
+					)
+				)
+				echo creating empty sidecar on next run to not modify this already modified file
+				echo "%directory_path_name:"=%.PlexCleaner"
+				>"%directory_path_name:"=%.PlexCleaner" echo 1
+			)
+		) else (
+			for /f %%b in ('mkvmerge.exe -i "%plex_folder:"=%" ^| find /c /i "subtitles"') do (
+				if [%%b]==[0] (
+					echo "%plex_folder:"=%" has no subtitles
+				) else (
+					echo "%plex_folder:"=%" has subtitles
+					for /l %%G in (1,1,%%b) do (
+						echo Subtitle track number %%G
+						"%mkvtoolnix_path:"=%mkvpropedit.exe" "%plex_folder:"=%" --edit track:s%%G --set flag-forced=0 --set name=""
+						if errorlevel 1 (
+							echo Warnings/errors generated during removing subtitle flags
+						) else (
+							echo Successfully removed subtitle flags
+						)
+						"%mkvtoolnix_path:"=%mkvpropedit.exe" "%plex_folder:"=%" --edit track:s%%G --set flag-default=0 --set name=""
+						if errorlevel 1 (
+							echo Warnings/errors generated during removing subtitle flags
+						) else (
+							echo Successfully removed subtitle flags
+						)
+					)
+				)
+			)
+		)
+		setLocal EnableDelayedExpansion
+
+goto :end_script
+
+:isdir
+
 set "comd=aws iam create-group %video_formats:"=%"
 for /F "tokens=3*" %%p in ("%comd%") do set "tokens=%%q"
 set n=0
@@ -299,4 +390,4 @@ if not %wait_interval% == 0 TIMEOUT /T %wait_interval%
 
 if %looping% == 1 goto :start_exe
 
-exit
+exit /b
