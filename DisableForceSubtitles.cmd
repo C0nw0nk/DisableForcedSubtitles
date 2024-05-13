@@ -87,7 +87,7 @@ set "PATH=%PATH%;%mkvtoolnix_path:"=%"
 
 pushd "%plex_folder:"=%" 2>nul
 if errorlevel 1 goto notdir
-goto isdir
+goto :isdir
 
 :notdir
 
