@@ -44,7 +44,6 @@ set looping=0
 
 :: End Edit DO NOT TOUCH ANYTHING BELOW THIS POINT UNLESS YOU KNOW WHAT YOUR DOING!
 
-color 0A
 TITLE C0nw0nk - Plex/Emby media disable forced subtitles
 
 :: Make script configurable via command line with arguements example
