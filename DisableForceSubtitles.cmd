@@ -15,12 +15,12 @@ set plex_folder=""
 :: Remove all tags from media this will be XML data inside the video container that would contain information for a media player to display such as actors in a scene etc
 :: 1 is to Remove
 :: 0 is to Keep
-set remove_all_tags=0
+set remove_all_tags=1
 
 :: Remove all chapter markers if you do not want chapter markers or do not need them this is useful for removing them
 :: 1 is to Remove
 :: 0 is to Keep
-set remove_all_chapter_markers=0
+set remove_all_chapter_markers=1
 
 :: Check for the .PlexCleaner sidecar file to skip already modified media
 :: 1 is to skip
@@ -92,7 +92,9 @@ goto :isdir
 
 		setlocal DisableDelayedExpansion
 		echo Direct file path not a directory "%plex_folder:"=%"
-		for /f "delims=" %%F in ("%plex_folder:"=%") do set "directory_path_name=%%~dpnF"
+		for /f "delims=" %%F in ("%plex_folder:"=%") do set "directory_path_name=%%~dpnF" && set "direct_file_name=%%~xF"
+		:: Fix for files that are pasted in that are not MKV format mkvmerge and tool only accept mkv files
+		if not "%direct_file_name:"=%" == ".mkv" set "plex_folder=%directory_path_name:"=%.mkv"
 
 		rem This will remove tags and global tags from the media item if you like
 		if [%remove_all_tags%]==[1] (
